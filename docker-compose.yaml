@@ -104,5 +104,5 @@ services:
     ports:
       - 9001:8080
     environment:
-        JAVA_OPTS: -Drocketmq.namesrv.addr=192.168.20.2:9876;192.168.20.2:9877 -Dcom.rocketmq.sendMessageWithVIPChannel=false
+        JAVA_OPTS: -Drocketmq.namesrv.addr=rmqnamesrv-a:9876;rmqnamesrv-b:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false
       
