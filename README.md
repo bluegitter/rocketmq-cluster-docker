@@ -11,6 +11,11 @@ mkdir ./{logs,store}
 docker-compose up -d
 ```
 
+## RocketMQ Console
+```
+open http://localhost:9001
+```
+
 ## shutdown
 ```shell
 docker-compose down
