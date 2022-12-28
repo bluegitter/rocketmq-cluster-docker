@@ -1,0 +1,108 @@
+version: '3.5'
+services:
+  rmqnamesrv-a:
+    image: foxiswho/rocketmq:server-4.5.2
+    restart: always
+    container_name: rmqnamesrv-a
+    ports:
+      - 9876:9876
+    volumes:
+      - ./logs/nameserver-a:/opt/logs
+      - ./store/nameserver-a:/opt/store
+    environment:
+      JAVA_OPT_EXT: "-Duser.home=/opt -Xms512m -Xmx512m -Xmn150m"
+
+
+  rmqnamesrv-b:
+    image: foxiswho/rocketmq:server-4.5.2
+    restart: always
+    container_name: rmqnamesrv-b
+    ports:
+      - 9877:9876
+    volumes:
+      - ./logs/nameserver-b:/opt/logs
+      - ./store/nameserver-b:/opt/store
+    environment:
+      JAVA_OPT_EXT: "-Duser.home=/opt -Xms512m -Xmx512m -Xmn150m"
+
+  rmqbroker-a:
+    image: foxiswho/rocketmq:broker-4.5.2
+    container_name: rmqbroker-a
+    restart: always
+    ports:
+      - 10909:10909
+      - 10911:10911
+      - 10912:10912
+    volumes:
+      - ./logs/broker-a:/opt/logs
+      - ./store/broker-a:/opt/store
+      - ./broker-a/broker-a.conf:/etc/rocketmq/broker.conf
+    environment:
+        TZ: Asia/Shanghai
+        JAVA_OPTS: " -Duser.home=/opt"
+        JAVA_OPT_EXT: "-server  -Xms512m -Xmx512m -Xmn150m"  
+    command: sh mqbroker -c /etc/rocketmq/broker.conf autoCreateTopicEnable=true &
+
+  rmqbroker-a-s:
+    image: foxiswho/rocketmq:broker-4.5.2
+    container_name: rmqbroker-a-s
+    restart: always
+    ports:
+      - 10919:10909
+      - 10921:10911
+      - 10922:10912
+    volumes:
+      - ./logs/broker-a-s:/opt/logs
+      - ./store/broker-a-s:/opt/store
+      - ./broker-a/broker-a-s.conf:/etc/rocketmq/broker.conf
+    environment:
+        TZ: Asia/Shanghai
+        JAVA_OPTS: " -Duser.home=/opt"
+        JAVA_OPT_EXT: "-server  -Xms512m -Xmx512m -Xmn150m"  
+    command: sh mqbroker -c /etc/rocketmq/broker.conf autoCreateTopicEnable=true &
+
+  rmqbroker-b:
+    image: foxiswho/rocketmq:broker-4.5.2
+    container_name: rmqbroker-b
+    restart: always
+    ports:
+      - 10929:10909
+      - 10931:10911
+      - 10932:10912    
+    volumes:
+      - ./logs/broker-b:/opt/logs
+      - ./store/broker-b:/opt/store
+      - ./broker-b/broker-b.conf:/etc/rocketmq/broker.conf
+    environment:
+        TZ: Asia/Shanghai
+        JAVA_OPTS: " -Duser.home=/opt"
+        JAVA_OPT_EXT: "-server -Xms512m -Xmx512m -Xmn150m"  
+    command: sh mqbroker -c /etc/rocketmq/broker.conf autoCreateTopicEnable=true &
+
+  rmqbroker-b-s:
+    image: foxiswho/rocketmq:broker-4.5.2
+    container_name: rmqbroker-b-s
+    restart: always
+    ports:
+      - 10939:10909
+      - 10941:10911
+      - 10942:10912     
+    volumes:
+      - ./logs/broker-b-s:/opt/logs
+      - ./store/broker-b-s:/opt/store
+      - ./broker-b/broker-b-s.conf:/etc/rocketmq/broker.conf
+    environment:
+        TZ: Asia/Shanghai
+        JAVA_OPTS: " -Duser.home=/opt"
+        JAVA_OPT_EXT: "-server  -Xms512m -Xmx512m -Xmn150m"  
+    command: sh mqbroker -c /etc/rocketmq/broker.conf autoCreateTopicEnable=true &
+
+  rmqconsole:
+    image: styletang/rocketmq-console-ng
+    container_name: rmqconsole
+    restart: always
+    ports:
+      - 9001:8080
+    environment:
+        JAVA_OPTS: -Drocketmq.namesrv.addr=192.168.20.2:9876;192.168.20.2:9877 -Dcom.rocketmq.sendMessageWithVIPChannel=false
+      
